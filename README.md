@@ -29,7 +29,7 @@
 
 ```
 index.html   전부 (인라인 CSS, 빌드 없음)
-logo.png     brand/acttub-logo.png 를 180px로 축소한 것
+logo.png     볼트 브랜드 폴더의 로고를 180px로 축소한 것
 ```
 
 의존성·빌드 단계 없음. `index.html` 열면 그대로 보인다.
@@ -42,18 +42,18 @@ logo.png     brand/acttub-logo.png 를 180px로 축소한 것
   허브에서 셋 중 어디로 갈리는지 이걸로 측정한다.
 - **문구는 제품 가드레일 적용 대상.** 점수·등급·평가·처방 프레임 금지.
   볼트 `AGENTS.md`의 "제품 가드레일" 절이 정본. 문구 고치면 다시 검사할 것.
-- 로고는 볼트 `brand/`가 정본. 바꿀 일이 있으면 거기서 가져와 축소한다.
+- 로고는 볼트의 브랜드 폴더가 정본. 바꿀 일이 있으면 거기서 가져와 축소한다.
 
 ## 배포
 
+`main`에 push하면 Vercel이 자동으로 프로덕션(`link.acttub.com`)에 반영한다.
+로컬에서 `vercel --prod`를 치지 않는다.
+
 ```bash
-vercel deploy --prod
+git push origin main
 ```
+
+다른 브랜치로 push하면 미리보기 URL만 생기고 프로덕션은 그대로다.
 
 DNS는 Cloudflare에 CNAME `link` → Vercel, **proxy는 반드시 DNS only(회색 구름)**.
 주황 구름이면 인증서 발급이 막힌다.
-
-## 자동 배포
-
-`main`에 push하면 Vercel이 자동으로 프로덕션(`link.acttub.com`)에 반영한다.
-다른 브랜치로 push하면 미리보기 URL만 생기고 프로덕션은 그대로다.
