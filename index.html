@@ -17,13 +17,13 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#f2f4f6" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#101318" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f2f4f6">
 <style>
-/* Pretendard — index.html에 쓰인 글자만 서브셋. 문구를 고치면 build-fonts.py를 다시 돌린다. */
+/* Pretendard — index.html에 쓰인 글자만 서브셋. 문구를 고치면 build-fonts.py를 다시 돌린다.
+   이 브랜드의 가장 얇은 굵기는 500이다(Regular 파일이 없고, 그보다 얇으면 희미해서 쓰지 않는다). */
 @font-face {
-  font-family: Pretendard; font-style: normal; font-weight: 400;
-  font-display: swap; src: url(/fonts/pretendard-400.woff2) format("woff2");
+  font-family: Pretendard; font-style: normal; font-weight: 500;
+  font-display: swap; src: url(/fonts/pretendard-500.woff2) format("woff2");
 }
 @font-face {
   font-family: Pretendard; font-style: normal; font-weight: 600;
@@ -34,47 +34,24 @@
   font-display: swap; src: url(/fonts/pretendard-700.woff2) format("woff2");
 }
 
+/* ── brand/DESIGN.md 토큰. 값을 바꿀 때는 정본을 먼저 고친다. ──
+   라이트 전용이다 — 제품 화면에 어두운 배경을 만들지 않는다. */
 :root {
-  --bg: #f2f4f6;
+  --neutral: #f2f4f6;
   --surface: #ffffff;
-  --surface-sub: #f1f3f5;
+  --surface-sub: #f9fafb;
   --ink: #191f28;
-  --ink-2: #4e5968;
-  --ink-3: #8b95a1;
-  --accent: #0a79fb;
-  --accent-ink: #ffffff;
-  --shadow: 0 2px 10px rgba(16, 24, 40, .07);
-  --shadow-lift: 0 6px 20px rgba(10, 121, 251, .28);
-  --ring: rgba(10, 121, 251, .45);
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #101318;
-    --surface: #1b1f27;
-    --surface-sub: #262c36;
-    --ink: #eceef1;
-    --ink-2: #a8b0bc;
-    --ink-3: #737c8a;
-    --accent: #4a9eff;
-    --accent-ink: #0b1220;
-    --shadow: none;
-    --shadow-lift: none;
-    --ring: rgba(74, 158, 255, .55);
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #101318; --surface: #1b1f27; --surface-sub: #262c36;
-  --ink: #eceef1; --ink-2: #a8b0bc; --ink-3: #737c8a;
-  --accent: #4a9eff; --accent-ink: #0b1220;
-  --shadow: none; --shadow-lift: none; --ring: rgba(74, 158, 255, .55);
-}
-:root[data-theme="light"] {
-  --bg: #f2f4f6; --surface: #ffffff; --surface-sub: #f1f3f5;
-  --ink: #191f28; --ink-2: #4e5968; --ink-3: #8b95a1;
-  --accent: #0a79fb; --accent-ink: #ffffff;
-  --shadow: 0 2px 10px rgba(16, 24, 40, .07);
-  --shadow-lift: 0 6px 20px rgba(10, 121, 251, .28);
-  --ring: rgba(10, 121, 251, .45);
+  --ink-sub: #4e5968;
+  --ink-tertiary: #6b7684;
+  --line: #e5e8eb;
+  --primary: #0a79fb;          /* 링크·표식 */
+  --primary-strong: #0355f1;   /* 흰 글자를 얹는 면 (AA) */
+  --primary-deep: #0243c4;     /* pressed */
+  --primary-soft: #e8f3ff;
+  --shadow: 0 2px 8px rgba(0, 0, 0, .08);
+  --r-md: 12px;   /* 컨트롤 */
+  --r-lg: 16px;   /* 그릇 */
+  --r-pill: 9999px;
 }
 
 * { box-sizing: border-box; }
@@ -83,11 +60,13 @@ body {
   margin: 0;
   padding: 36px 20px calc(28px + env(safe-area-inset-bottom));
   min-height: 100svh;
-  background: var(--bg);
+  background: var(--neutral);
   color: var(--ink);
   font-family: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 15px;
+  font-weight: 500;
   line-height: 1.6;
+  word-break: keep-all;
   -webkit-font-smoothing: antialiased;
 }
 .wrap {
@@ -101,17 +80,17 @@ body {
 /* ── 프로필 헤더 ── */
 .head { text-align: center; margin-bottom: 26px; }
 .avatar {
-  width: 64px; height: 64px; border-radius: 20px;
+  width: 64px; height: 64px; border-radius: var(--r-lg);
   display: block; margin: 0 auto 14px;
   box-shadow: var(--shadow);
 }
 .name {
   margin: 0;
-  font-size: 21px; font-weight: 700; letter-spacing: -.02em; line-height: 1.3;
+  font-size: 22px; font-weight: 700; letter-spacing: -.02em; line-height: 1.36;
 }
 .tagline {
   margin: 5px 0 0;
-  color: var(--ink-2); font-size: 14px; letter-spacing: -.01em;
+  color: var(--ink-sub); font-size: 15px;
 }
 
 /* ── 공통 링크 ── */
@@ -122,86 +101,87 @@ a.item {
   background: var(--surface);
   box-shadow: var(--shadow);
   -webkit-tap-highlight-color: transparent;
-  transition: transform .13s ease;
+  transition: transform .12s ease-out;
 }
+/* pressed는 배경색 이동 + scale(0.98)까지. 그림자·크기 연출을 더하지 않는다. */
 a.item:active { transform: scale(.98); }
-a.item:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+a.item:focus-visible { outline: 1.5px solid var(--primary); outline-offset: 2px; }
 
-/* ── 주 항목 ── */
+/* ── 주 항목 — acttub 코어. 이 계층을 평평하게 만들지 않는다. ── */
 .primary {
-  border-radius: 20px;
+  border-radius: var(--r-lg);
   padding: 22px 22px 20px;
 }
 .primary .t {
   margin: 0 0 7px;
-  font-size: 19px; font-weight: 700; letter-spacing: -.02em;
+  font-size: 20px; font-weight: 600; line-height: 1.4;
 }
 .primary .d {
   margin: 0 0 18px;
-  color: var(--ink-2); font-size: 14px; line-height: 1.55;
+  color: var(--ink-sub); font-size: 15px; line-height: 1.6;
 }
 .cta {
   display: flex; align-items: center; justify-content: center; gap: 6px;
-  height: 52px; border-radius: 14px;
-  background: var(--accent); color: var(--accent-ink);
-  font-size: 16px; font-weight: 700; letter-spacing: -.01em;
-  box-shadow: var(--shadow-lift);
+  height: 52px; border-radius: var(--r-md);
+  background: var(--primary-strong); color: #fff;
+  font-size: 16px; font-weight: 600;
 }
+a.item:active .cta { background: var(--primary-deep); }
 .cta svg { flex: none; }
 
 /* ── 구분 라벨 ── */
+/* neutral 배경 위에서는 ink-tertiary가 4.19:1로 AA에 못 미친다 → ink-sub를 쓴다.
+   (ink-tertiary의 AA 보장은 흰 배경 기준이다) */
 .label {
   margin: 26px 0 10px;
   padding-left: 4px;
-  font-size: 12.5px; font-weight: 600; color: var(--ink-3); letter-spacing: -.01em;
+  font-size: 12px; font-weight: 600; color: var(--ink-sub);
 }
 
 /* ── 보조 항목 ── */
 .row {
   display: flex; align-items: center; gap: 12px;
-  border-radius: 15px;
+  border-radius: var(--r-lg);
   padding: 14px 16px;
   margin-bottom: 9px;
 }
 .row .body { flex: 1; min-width: 0; }
 .row .t {
   display: block;
-  font-size: 15px; font-weight: 600; letter-spacing: -.01em;
+  font-size: 15px; font-weight: 600;
 }
 .row .d {
   display: block; margin-top: 2px;
-  font-size: 12.5px; color: var(--ink-3); line-height: 1.45;
+  font-size: 13px; color: var(--ink-tertiary); line-height: 1.54;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .badge {
   flex: none;
-  font-size: 11.5px; font-weight: 700; color: var(--ink-2);
-  background: var(--surface-sub);
-  border-radius: 999px; padding: 4px 9px;
+  font-size: 12px; font-weight: 600; color: var(--primary-strong);
+  background: var(--primary-soft);
+  border-radius: var(--r-pill); padding: 4px 10px;
   font-variant-numeric: tabular-nums;
 }
-.chev { flex: none; color: var(--ink-3); }
+.chev { flex: none; color: var(--ink-tertiary); }
 
 /* ── 푸터 ── */
-.foot {
-  margin-top: auto; padding-top: 26px; text-align: center;
-}
+.foot { margin-top: auto; padding-top: 26px; text-align: center; }
 .foot a {
   display: inline-block; padding: 8px 12px;
-  color: var(--ink-3); text-decoration: none;
+  color: var(--ink-sub); text-decoration: none;
   font-size: 13px; font-weight: 600;
-  border-radius: 10px;
+  border-radius: 8px;
   -webkit-tap-highlight-color: transparent;
 }
-.foot a:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+.foot a:focus-visible { outline: 1.5px solid var(--primary); outline-offset: 2px; }
 
-/* ── 진입 모션 ── */
+/* ── 진입 모션 ──
+   80~240ms, ease-out 계열의 곧은 곡선. 탄성·바운스 금지.
+   요소를 하나씩 시차로 등장시키는 연출(stagger)은 쓰지 않는다 — 한 번에 들어온다. */
 @media (prefers-reduced-motion: no-preference) {
-  .rise { animation: rise .42s cubic-bezier(.22,.68,.36,1) backwards; }
-  .d1 { animation-delay: .04s } .d2 { animation-delay: .10s }
-  .d3 { animation-delay: .15s } .d4 { animation-delay: .19s }
+  .rise { animation: rise .22s cubic-bezier(.2, .8, .2, 1) backwards; }
   @keyframes rise {
-    from { opacity: 0; transform: translateY(9px); }
+    from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: none; }
   }
 }
@@ -210,22 +190,22 @@ a.item:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
 <body>
 <div class="wrap">
 
-  <header class="head rise d1">
+  <header class="head rise">
     <img class="avatar" src="/logo.png" width="64" height="64" alt="" decoding="async">
     <h1 class="name">acttub</h1>
     <p class="tagline">답을 주는 대신, 같이 질문합니다</p>
   </header>
 
   <main>
-    <a class="item primary rise d2" href="https://acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=core">
+    <a class="item primary rise" href="https://acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=core">
       <p class="t">acttub 시작하기</p>
       <p class="d">연기 영상을 올리면 AI가 질문을 건네요. 주고받다 보면 놓쳤던 생각이 내 문장으로 남습니다.</p>
       <span class="cta">지금 시작해보기<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
     </a>
 
-    <p class="label rise d3">가볍게 시작해보기</p>
+    <p class="label rise">가볍게 시작해보기</p>
 
-    <a class="item row rise d3" href="https://voice.acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=voice">
+    <a class="item row rise" href="https://voice.acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=voice">
       <span class="body">
         <span class="t">보이스 컬러</span>
         <span class="d">녹음 한 번으로 찾는 내 목소리 색</span>
@@ -234,7 +214,7 @@ a.item:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
       <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
     </a>
 
-    <a class="item row rise d4" href="https://acti.acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=acti">
+    <a class="item row rise" href="https://acti.acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=acti">
       <span class="body">
         <span class="t">연기 스타일 유형 찾기</span>
         <span class="d">12문항으로 보는 나의 연기 색깔</span>
@@ -244,7 +224,7 @@ a.item:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
     </a>
   </main>
 
-  <footer class="foot rise d4">
+  <footer class="foot rise">
     <a href="https://instagram.com/acttub_com">@acttub_com</a>
   </footer>
 

@@ -24,7 +24,7 @@ OUT_DIR = HERE / "fonts"
 
 # CSS font-weight -> 원본 파일
 WEIGHTS = {
-    400: "Pretendard-Medium.otf",    # Regular가 없어 Medium을 본문 굵기로 쓴다
+    500: "Pretendard-Medium.otf",    # 이 브랜드의 가장 얇은 굵기 (Regular 파일이 없다)
     600: "Pretendard-SemiBold.otf",
     700: "Pretendard-Bold.otf",
 }
