@@ -52,3 +52,8 @@ vercel deploy --prod
 
 DNS는 Cloudflare에 CNAME `link` → Vercel, **proxy는 반드시 DNS only(회색 구름)**.
 주황 구름이면 인증서 발급이 막힌다.
+
+## 자동 배포
+
+`main`에 push하면 Vercel이 자동으로 프로덕션(`link.acttub.com`)에 반영한다.
+다른 브랜치로 push하면 미리보기 URL만 생기고 프로덕션은 그대로다.
