@@ -48,11 +48,22 @@ Pro 플랜 전용이고 이 계정은 Hobby다. 코드를 넣어도 집계되지
   자체적으로 읽을 때를 위한 것이니 **떼지 않는다.**
 - Hobby 한도: 이벤트 5만/월(계정 전체 합산), 데이터 보관 1개월.
 
-⚠️ **스크립트 태그만 넣고 재배포하지 않으면 `/_vercel/insights/script.js`가 404다.**
-실제로 2026-07-20까지 이 상태였고 조회수조차 0건이었다. 배포 후 아래로 확인한다.
+숫자는 대시보드 대신 조회 API로도 뽑을 수 있다
+(`GET /v1/query/web-analytics/visits/aggregate`, `by=referrerHostname`).
+
+### 켤 때 걸렸던 함정 두 개 (2026-07-20)
+
+1. **대시보드에서 Enable을 누른 뒤 재배포해야 라우트가 생긴다.** 순서를 지키지
+   않으면 영원히 404다. REST API에도 CLI에도 켜는 명령이 없다 —
+   프로젝트 API의 `webAnalytics.id` 필드는 활성화의 증거가 아니다.
+2. **SPA 폴백 리라이트가 스크립트를 삼킬 수 있다.** acti가 그랬다.
+   이때는 404가 아니라 **200 text/html**이 와서 정상처럼 보인다.
+
+그래서 확인은 상태 코드가 아니라 **content-type**으로 한다.
 
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" https://link.acttub.com/_vercel/insights/script.js  # 200이어야 한다
+curl -s -o /dev/null -w "%{http_code} %{content_type}\n" \
+  https://link.acttub.com/_vercel/insights/script.js   # 200 application/javascript 여야 한다
 ```
 
 ## 링크를 추가·교체할 때
