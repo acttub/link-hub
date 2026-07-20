@@ -35,9 +35,25 @@ uv run --with "fonttools[woff]" python build-fonts.py
 ## 측정
 
 페이지 조회수는 Vercel Web Analytics(쿠키리스)로 본다.
-**링크별 클릭은 이 페이지에서 세지 않는다** — 목적지 3곳이 각자 분석 도구로
-`utm_source=linkhub` 유입을 집계하고, 그 합을 조회수로 나눠 CTR을 구한다.
-그래서 **링크에서 UTM을 떼면 측정이 통째로 불가능해진다.**
+
+**링크별 클릭은 이 페이지에서 셀 수 없다.** Vercel의 커스텀 이벤트(`va('event', …)`)는
+Pro 플랜 전용이고 이 계정은 Hobby다. 코드를 넣어도 집계되지 않으니 시도하지 않는다.
+
+대신 **목적지 쪽에서 역으로 센다.** `voice`·`acti`의 `index.html`에도 같은
+`/_vercel/insights/script.js`를 넣어두었다. 각 목적지 대시보드의 **Referrers**에서
+`link.acttub.com` 유입 수를 보고, 허브 조회수로 나누면 링크별 CTR이 나온다.
+
+- `acttub.com`은 소스 저장소가 특정되지 않아 아직 안 붙었다. **코어 링크의 클릭은 측정 공백이다.**
+- UTM 파라미터로 거르는 기능은 Web Analytics Plus부터다. 지금 UTM은 목적지가
+  자체적으로 읽을 때를 위한 것이니 **떼지 않는다.**
+- Hobby 한도: 이벤트 5만/월(계정 전체 합산), 데이터 보관 1개월.
+
+⚠️ **스크립트 태그만 넣고 재배포하지 않으면 `/_vercel/insights/script.js`가 404다.**
+실제로 2026-07-20까지 이 상태였고 조회수조차 0건이었다. 배포 후 아래로 확인한다.
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://link.acttub.com/_vercel/insights/script.js  # 200이어야 한다
+```
 
 ## 링크를 추가·교체할 때
 
