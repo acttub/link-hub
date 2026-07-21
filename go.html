@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>acttub</title>
+
+<!-- 검색 결과에 뜰 페이지가 아니다. 사람이 읽는 화면이 아니라 지나가는 길목이다. -->
+<meta name="robots" content="noindex">
+
+<!-- JS가 꺼져 있어도 결국 도착은 시킨다. 이 경로에서는 기록이 남지 않는다 —
+     도착이 기록보다 우선이다. -->
+<meta http-equiv="refresh" content="3; url=https://acttub.com/">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<meta name="theme-color" content="#f2f4f6">
+<style>
+/* 폰트를 부르지 않는다. fonts/*.woff2는 index.html에 쓰인 글자만 담은 서브셋이라
+   여기서 새 문구를 렌더하면 서체가 섞인다. 0.2초 스쳐가는 화면이라 시스템 폰트로 충분하고,
+   덕분에 이 파일은 build-fonts.py 재실행 대상이 아니다. */
+html, body { margin: 0; height: 100%; background: #f2f4f6; }
+body {
+  display: flex; align-items: center; justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #8b95a1; font-size: 15px;
+}
+a { color: #0a79fb; }
+</style>
+</head>
+<body>
+
+<!-- 보통은 눈에 띄기 전에 넘어간다. 리다이렉트가 실패했을 때만 실제로 읽히는 문구다. -->
+<p>acttub으로 이동 중… <a href="https://acttub.com/">바로 가기</a></p>
+
+<script>
+// 이 페이지가 존재하는 이유:
+//   acttub.com은 소스 저장소가 특정되지 않아 우리가 계측을 붙일 수 없다(볼트 AGENTS.md).
+//   그래서 "어느 채널에서 왔는지"를 남기려면 우리가 소유한 이 도메인을 한 번 거쳐야 한다.
+//   link.acttub.com/go?from=filmmakers → 기록 → acttub.com
+//
+// 목적지는 하드코딩이다. 절대 파라미터에서 읽지 않는다 —
+// 그렇게 하면 누구나 우리 도메인으로 아무 데나 보내는 공개 리다이렉터가 된다.
+var DEST = "https://acttub.com/";
+
+// ⚠️ 리뷰 폼(planning/검증/review-form-site/)과 반드시 다른 배포 URL을 쓴다.
+//    이 저장소는 공개라 여기 적힌 주소는 누구나 볼 수 있다. 리뷰 폼 주소를 여기 넣으면
+//    전화번호가 들어 있는 검증 응답 시트에 아무나 행을 넣을 수 있게 된다.
+//    설정 방법은 apps-script.gs 파일 맨 위에 있다.
+var ENDPOINT = "https://script.google.com/macros/s/AKfycbxmvQWyu-kslgIbVshJolG2KXV_omgT_vcUpmwJljvvYE8MkwUug-WGEhZmWUdU2ErK/exec";
+
+(function () {
+  var search = location.search || "";
+
+  // 클릭 1건마다 새로 만드는 값이다. 같은 사람의 재방문을 잇지 않는다 —
+  // 그러려면 브라우저에 식별자를 남겨야 하는데, 유입 채널을 세는 데 그건 필요 없다.
+  // 중복 기록을 골라내고 문제를 추적하는 용도다.
+  var clickId = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+  // 직전 페이지는 "어느 사이트에서 왔는지"까지만 남긴다.
+  // 전체 주소에는 보내는 쪽 사정에 따라 검색어·계정 ID·토큰이 섞여 들어올 수 있다
+  // (그 사이트가 Referrer-Policy를 느슨하게 두면 경로와 쿼리까지 딸려온다).
+  // 우리가 알아야 하는 건 출처 사이트뿐이다.
+  var refSite = "";
+  try { if (document.referrer) refSite = new URL(document.referrer).origin; } catch (e) {}
+
+  var payload = JSON.stringify({
+    type: "click",
+    at: new Date().toISOString(),
+    // from 하나만 따로 뽑아 시트에서 바로 필터할 수 있게 한다.
+    from: new URLSearchParams(search).get("from") || "",
+    // 전체 쿼리도 통째로 남긴다 — utm_* 등 나중에 붙일 파라미터가 유실되지 않게.
+    src: search,
+    ref: refSite,
+    click_id: clickId
+  });
+
+  // sendBeacon을 쓰는 이유: 곧바로 페이지를 떠나기 때문이다.
+  // 평범한 fetch는 이동하는 순간 취소돼서 기록이 절반쯤 사라진다.
+  // beacon은 브라우저가 이동 후에도 책임지고 보낸다.
+  // text/plain으로 보내야 preflight 없이 Apps Script가 받는다.
+  if (ENDPOINT) {
+    try {
+      var blob = new Blob([payload], { type: "text/plain;charset=UTF-8" });
+      if (!(navigator.sendBeacon && navigator.sendBeacon(ENDPOINT, blob))) {
+        // beacon이 없거나 큐에 넣기를 거부한 경우. keepalive가 같은 역할을 한다.
+        fetch(ENDPOINT, { method: "POST", mode: "no-cors", keepalive: true, body: payload });
+      }
+    } catch (e) {
+      // 기록이 실패해도 사람은 도착해야 한다. 여기서 멈추지 않는다.
+    }
+  }
+
+  // replace를 쓰는 이유: 뒤로가기로 이 페이지에 돌아오면 다시 앞으로 튕겨나가
+  // 사용자가 원래 보던 글로 못 돌아간다. replace는 방문 기록을 남기지 않아
+  // acttub.com에서 뒤로가기를 누르면 커뮤니티 글로 곧장 돌아간다.
+  location.replace(DEST + search);
+})();
+</script>
+</body>
+</html>
