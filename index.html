@@ -18,182 +18,20 @@
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#f2f4f6">
-<style>
-/* Pretendard — index.html에 쓰인 글자만 서브셋. 문구를 고치면 build-fonts.py를 다시 돌린다.
-   이 브랜드의 가장 얇은 굵기는 500이다(Regular 파일이 없고, 그보다 얇으면 희미해서 쓰지 않는다). */
-@font-face {
-  font-family: Pretendard; font-style: normal; font-weight: 500;
-  font-display: swap; src: url(/fonts/pretendard-500.woff2) format("woff2");
-}
-@font-face {
-  font-family: Pretendard; font-style: normal; font-weight: 600;
-  font-display: swap; src: url(/fonts/pretendard-600.woff2) format("woff2");
-}
-@font-face {
-  font-family: Pretendard; font-style: normal; font-weight: 700;
-  font-display: swap; src: url(/fonts/pretendard-700.woff2) format("woff2");
-}
-
-/* ── brand/DESIGN.md 토큰. 값을 바꿀 때는 정본을 먼저 고친다. ──
-   라이트 전용이다 — 제품 화면에 어두운 배경을 만들지 않는다. */
-:root {
-  --neutral: #f2f4f6;
-  --surface: #ffffff;
-  --surface-sub: #f9fafb;
-  --ink: #191f28;
-  --ink-sub: #4e5968;
-  --ink-tertiary: #6b7684;
-  --line: #e5e8eb;
-  --primary: #0a79fb;          /* 링크·표식 */
-  --primary-strong: #0355f1;   /* 흰 글자를 얹는 면 (AA) */
-  --primary-deep: #0243c4;     /* pressed */
-  --primary-soft: #e8f3ff;
-  --shadow: 0 2px 8px rgba(0, 0, 0, .08);
-  --r-md: 12px;   /* 컨트롤 */
-  --r-lg: 16px;   /* 그릇 */
-  --r-pill: 9999px;
-}
-
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0;
-  padding: 36px 20px calc(28px + env(safe-area-inset-bottom));
-  min-height: 100svh;
-  background: var(--neutral);
-  color: var(--ink);
-  font-family: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.6;
-  word-break: keep-all;
-  -webkit-font-smoothing: antialiased;
-}
-.wrap {
-  max-width: 400px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100svh - 64px - env(safe-area-inset-bottom));
-}
-
-/* ── 프로필 헤더 ── */
-.head { text-align: center; margin-bottom: 26px; }
-.avatar {
-  width: 64px; height: 64px; border-radius: var(--r-lg);
-  display: block; margin: 0 auto 14px;
-  box-shadow: var(--shadow);
-}
-.name {
-  margin: 0;
-  font-size: 22px; font-weight: 700; letter-spacing: -.02em; line-height: 1.36;
-}
-.tagline {
-  margin: 5px 0 0;
-  color: var(--ink-sub); font-size: 15px;
-}
-
-/* ── 공통 링크 ── */
-a.item {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  -webkit-tap-highlight-color: transparent;
-  transition: transform .12s ease-out;
-}
-/* pressed는 배경색 이동 + scale(0.98)까지. 그림자·크기 연출을 더하지 않는다. */
-a.item:active { transform: scale(.98); }
-a.item:focus-visible { outline: 1.5px solid var(--primary); outline-offset: 2px; }
-
-/* ── 주 항목 — acttub 코어. 이 계층을 평평하게 만들지 않는다. ── */
-.primary {
-  border-radius: var(--r-lg);
-  padding: 22px 22px 20px;
-}
-.primary .t {
-  margin: 0 0 7px;
-  font-size: 20px; font-weight: 600; line-height: 1.4;
-}
-.primary .d {
-  margin: 0 0 18px;
-  color: var(--ink-sub); font-size: 15px; line-height: 1.6;
-}
-.cta {
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  height: 52px; border-radius: var(--r-md);
-  background: var(--primary-strong); color: #fff;
-  font-size: 16px; font-weight: 600;
-}
-a.item:active .cta { background: var(--primary-deep); }
-.cta svg { flex: none; }
-
-/* ── 구분 라벨 ── */
-/* neutral 배경 위에서는 ink-tertiary가 4.19:1로 AA에 못 미친다 → ink-sub를 쓴다.
-   (ink-tertiary의 AA 보장은 흰 배경 기준이다) */
-.label {
-  margin: 26px 0 10px;
-  padding-left: 4px;
-  font-size: 12px; font-weight: 600; color: var(--ink-sub);
-}
-
-/* ── 보조 항목 ── */
-.row {
-  display: flex; align-items: center; gap: 12px;
-  border-radius: var(--r-lg);
-  padding: 14px 16px;
-  margin-bottom: 9px;
-}
-.row .body { flex: 1; min-width: 0; }
-.row .t {
-  display: block;
-  font-size: 15px; font-weight: 600;
-}
-.row .d {
-  display: block; margin-top: 2px;
-  font-size: 13px; color: var(--ink-tertiary); line-height: 1.54;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.badge {
-  flex: none;
-  font-size: 12px; font-weight: 600; color: var(--primary-strong);
-  background: var(--primary-soft);
-  border-radius: var(--r-pill); padding: 4px 10px;
-  font-variant-numeric: tabular-nums;
-}
-.chev { flex: none; color: var(--ink-tertiary); }
-
-/* ── 푸터 ── */
-.foot { margin-top: auto; padding-top: 26px; text-align: center; }
-.foot a {
-  display: inline-block; padding: 8px 12px;
-  color: var(--ink-sub); text-decoration: none;
-  font-size: 13px; font-weight: 600;
-  border-radius: 8px;
-  -webkit-tap-highlight-color: transparent;
-}
-.foot a:focus-visible { outline: 1.5px solid var(--primary); outline-offset: 2px; }
-
-/* ── 진입 모션 ──
-   80~240ms, ease-out 계열의 곧은 곡선. 탄성·바운스 금지.
-   요소를 하나씩 시차로 등장시키는 연출(stagger)은 쓰지 않는다 — 한 번에 들어온다. */
-@media (prefers-reduced-motion: no-preference) {
-  .rise { animation: rise .22s cubic-bezier(.2, .8, .2, 1) backwards; }
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: none; }
-  }
-}
-</style>
+<!-- 스타일은 Tailwind CLI로 src/input.css → styles.css를 구운 결과다. 손으로 고치지 않는다.
+     클래스를 바꾸면 `npm run css`를 다시 돌려 styles.css를 커밋한다(AGENTS.md 참조).
+     디자인 토큰(색·모서리·그림자·폰트)은 src/input.css의 @theme 블록에 있다. -->
+<link rel="stylesheet" href="/styles.css">
 </head>
-<body>
-<div class="wrap">
+<!-- 간격은 전부 px로 못박는다. rem 기반 유틸리티(pt-9 등)를 쓰면 루트 글꼴이 16px이 아닐 때
+     아래 wrap의 고정 64px 계산과 어긋난다. -->
+<body class="min-h-svh bg-ground text-ink font-sans text-[15px] font-medium leading-[1.6] break-keep antialiased pt-[36px] px-[20px] pb-[calc(28px+env(safe-area-inset-bottom))]">
+<div class="mx-auto flex min-h-[calc(100svh-64px-env(safe-area-inset-bottom))] max-w-[400px] flex-col">
 
-  <header class="head rise">
-    <img class="avatar" src="/logo.png" width="64" height="64" alt="" decoding="async">
-    <h1 class="name">acttub</h1>
-    <p class="tagline">답을 주는 대신, 같이 질문합니다</p>
+  <header class="rise mb-[26px] text-center">
+    <img class="mx-auto mb-[14px] block h-[64px] w-[64px] rounded-card shadow-card" src="/logo.png" width="64" height="64" alt="" decoding="async">
+    <h1 class="text-[22px] font-bold leading-[1.36] tracking-[-0.02em]">acttub</h1>
+    <p class="mt-[5px] text-[15px] text-ink-sub">답을 주는 대신, 같이 질문합니다</p>
   </header>
 
   <main>
@@ -204,35 +42,37 @@ a.item:active .cta { background: var(--primary-deep); }
          "/go"가 아니라 "go.html"인 이유: 이 파일을 브라우저로 그냥 열어봤을 때(README가
          약속하는 방식) "/go"는 file:///go 로 잘못 풀려 메인 CTA가 죽는다. 배포본에서는
          cleanUrls가 go.html을 /go 로 한 번 넘겨주므로 양쪽 다 동작한다. -->
-    <a class="item primary rise" href="go.html?from=hub-core&utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=core">
-      <p class="t">acttub 시작하기</p>
-      <p class="d">연기 영상을 올리면 AI가 질문을 건네요. 주고받다 보면 놓쳤던 생각이 내 문장으로 남습니다.</p>
-      <span class="cta">지금 시작해보기<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+    <!-- 주 항목 — acttub 코어. 이 계층을 평평하게 만들지 않는다. group은 자식 .cta의 pressed 색 전환에 쓴다. -->
+    <a class="item rise group block rounded-card pt-[22px] px-[22px] pb-[20px]" href="go.html?from=hub-core&utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=core">
+      <p class="mb-[7px] text-[20px] font-semibold leading-[1.4]">acttub 시작하기</p>
+      <p class="mb-[18px] text-[15px] leading-[1.6] text-ink-sub">연기 영상을 올리면 AI가 질문을 건네요. 주고받다 보면 놓쳤던 생각이 내 문장으로 남습니다.</p>
+      <span class="flex h-[52px] items-center justify-center gap-[6px] rounded-control bg-primary-strong text-[16px] font-semibold text-white group-active:bg-primary-deep">지금 시작해보기<svg class="shrink-0" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
     </a>
 
-    <p class="label rise">가볍게 시작해보기</p>
+    <!-- neutral 배경 위에서는 ink-tertiary가 4.19:1로 AA에 못 미친다 → ink-sub를 쓴다. -->
+    <p class="rise mt-[26px] mb-[10px] pl-[4px] text-[12px] font-semibold text-ink-sub">가볍게 시작해보기</p>
 
-    <a class="item row rise" href="https://voice.acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=voice">
-      <span class="body">
-        <span class="t">보이스 컬러</span>
-        <span class="d">녹음 한 번으로 찾는 내 목소리 색</span>
+    <a class="item rise mb-[9px] flex items-center gap-[12px] rounded-card py-[14px] px-[16px]" href="https://voice.acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=voice">
+      <span class="min-w-0 flex-1">
+        <span class="block text-[15px] font-semibold">보이스 컬러</span>
+        <span class="mt-[2px] block truncate text-[13px] leading-[1.54] text-ink-tertiary">녹음 한 번으로 찾는 내 목소리 색</span>
       </span>
-      <span class="badge">30초</span>
-      <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      <span class="shrink-0 rounded-full bg-primary-soft py-[4px] px-[10px] text-[12px] font-semibold tabular-nums text-primary-strong">30초</span>
+      <svg class="shrink-0 text-ink-tertiary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
     </a>
 
-    <a class="item row rise" href="https://acti.acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=acti">
-      <span class="body">
-        <span class="t">내 연기 캐릭터 찾기</span>
-        <span class="d">질문 14개로 찾아보는 내 연기 캐릭터</span>
+    <a class="item rise mb-[9px] flex items-center gap-[12px] rounded-card py-[14px] px-[16px]" href="https://acti.acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=acti">
+      <span class="min-w-0 flex-1">
+        <span class="block text-[15px] font-semibold">내 연기 캐릭터 찾기</span>
+        <span class="mt-[2px] block truncate text-[13px] leading-[1.54] text-ink-tertiary">질문 14개로 찾아보는 내 연기 캐릭터</span>
       </span>
-      <span class="badge">2~3분</span>
-      <svg class="chev" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+      <span class="shrink-0 rounded-full bg-primary-soft py-[4px] px-[10px] text-[12px] font-semibold tabular-nums text-primary-strong">2~3분</span>
+      <svg class="shrink-0 text-ink-tertiary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
     </a>
   </main>
 
-  <footer class="foot rise">
-    <a href="https://instagram.com/acttub_com">@acttub_com</a>
+  <footer class="rise mt-auto pt-[26px] text-center">
+    <a class="inline-block rounded-[8px] py-[8px] px-[12px] text-[13px] font-semibold text-ink-sub no-underline [-webkit-tap-highlight-color:transparent] focus-visible:[outline:1.5px_solid_var(--color-primary)] focus-visible:outline-offset-2" href="https://instagram.com/acttub_com">@acttub_com</a>
   </footer>
 
 </div>

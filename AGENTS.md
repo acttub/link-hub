@@ -15,7 +15,17 @@
 - **`target="_blank"`를 새로 넣지 않는다.** 인스타 인앱 브라우저에서 깨진다.
 - **링크에서 UTM을 떼지 않는다.** 이게 없으면 허브가 실제로 작동하는지 알 수 없다.
 - **계층을 평평하게 만들지 않는다.** acttub이 크고, voice·acti는 그 아래 작은 행이다. 같은 크기로 나열하면 깔때기가 무너진다.
-- 페이지에 빌드 단계를 도입하지 않는다. `index.html`은 손으로 고치는 정적 한 장으로 유지한다.
+- **스타일은 Tailwind CSS로 짠다.** `index.html`의 클래스를 고쳤으면 반드시 CSS를 다시 굽는다:
+
+  ```bash
+  npm install   # 처음 한 번 (node_modules는 커밋하지 않는다)
+  npm run css   # src/input.css → styles.css (minified) 를 다시 굽는다
+  ```
+
+  - 디자인 토큰(색·모서리·그림자·폰트)은 `src/input.css`의 `@theme` 블록에 있다 — 값은 볼트 `brand/DESIGN.md`가 정본이니 거기부터 고친다.
+  - 세 항목이 공유하는 카드 표면은 `.item` 컴포넌트(`@apply`)로 묶여 있고, 진입 모션 `.rise`와 폰트 `@font-face`도 `src/input.css`에 있다. 레이아웃·간격·타이포는 마크업에서 유틸리티 클래스로 준다.
+  - **컴파일된 `styles.css`는 커밋한다** — Vercel은 빌드하지 않고 이 파일을 그대로 서빙한다(`vercel.json`의 `buildCommand`·`installCommand`가 비어 있음). `styles.css`를 안 굽고 클래스만 바꾸면 배포에 반영되지 않는다.
+  - **`go.html`은 Tailwind를 쓰지 않는다** — 0.2초 스쳐가는 리다이렉트라 자체 인라인 CSS로 둔다.
 
 ## ⚠️ 문구를 고치면 폰트를 다시 만든다
 

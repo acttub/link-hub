@@ -28,14 +28,25 @@
 ## 파일
 
 ```
-index.html      허브 페이지 전부 (인라인 CSS, 빌드 없음)
+index.html      허브 페이지 전부 (Tailwind CSS, styles.css를 링크)
+styles.css       Tailwind CLI가 src/input.css에서 구운 결과 (커밋함, Vercel이 그대로 서빙)
+src/input.css   Tailwind 진입점 — @theme 토큰 · .item 컴포넌트 · .rise 모션 · @font-face
 go.html         채널 유입 기록용 경유 페이지 (아래 "채널별 유입 기록")
 apps-script.gs  go.html이 보낸 기록을 구글 시트에 쌓는 수신 코드
-vercel.json     cleanUrls — /go.html 을 /go 로도 열리게 한다
+vercel.json     cleanUrls + 빌드·설치 비활성(정적 서빙 유지)
 logo.png        볼트 브랜드 폴더의 로고를 180px로 축소한 것
 ```
 
-의존성·빌드 단계 없음. `index.html` 열면 그대로 보인다.
+스타일은 Tailwind로 짠다. `index.html`의 클래스를 고쳤으면 `npm run css`로 `styles.css`를
+다시 구워 커밋한다. Vercel은 빌드하지 않고 커밋된 `styles.css`를 그대로 서빙한다.
+
+```bash
+npm install   # 처음 한 번 (node_modules는 커밋하지 않음)
+npm run css   # src/input.css → styles.css
+```
+
+> 외부 스타일시트라 `index.html`을 파일로 그냥 열면(file://) 스타일이 안 붙는다.
+> 화면을 확인하려면 정적 서버로 연다: `npx serve` 또는 `python3 -m http.server`.
 
 ## 채널별 유입 기록 (`/go`)
 

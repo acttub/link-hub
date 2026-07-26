@@ -1,0 +1,71 @@
+/* source(none)으로 자동 탐지를 끄고 index.html만 스캔한다. 이게 없으면 Tailwind가 저장소 전체를
+   훑어 README·AGENTS의 클래스처럼 보이는 문자열까지 CSS로 만들어낸다.
+   go.html은 Tailwind를 쓰지 않고 자체 인라인 CSS로 둔다. */
+@import "tailwindcss" source(none);
+@source "../index.html";
+
+/* ── brand/DESIGN.md 토큰 → Tailwind 테마. 값을 바꿀 때는 정본을 먼저 고친다. ──
+   라이트 전용이다 — 제품 화면에 어두운 배경을 만들지 않는다.
+   neutral은 Tailwind 기본 색상 스케일과 겹쳐서 ground로 이름을 바꿨다. */
+@theme {
+  --color-ground: #f2f4f6;
+  --color-surface: #ffffff;
+  --color-surface-sub: #f9fafb;
+  --color-ink: #191f28;
+  --color-ink-sub: #4e5968;
+  --color-ink-tertiary: #6b7684;
+  --color-line: #e5e8eb;
+  --color-primary: #0a79fb;          /* 링크·표식 */
+  --color-primary-strong: #0355f1;   /* 흰 글자를 얹는 면 (AA) */
+  --color-primary-deep: #0243c4;     /* pressed */
+  --color-primary-soft: #e8f3ff;
+
+  --radius-card: 16px;               /* 그릇 */
+  --radius-control: 12px;            /* 컨트롤 */
+
+  --shadow-card: 0 2px 8px rgb(0 0 0 / 0.08);
+
+  --font-sans: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ── 공통 링크 카드 ──
+   세 항목이 공유하는 상호작용 표면(면·그림자·눌림·포커스 링·탭 하이라이트)만 묶는다.
+   레이아웃(block/flex·모서리·패딩)은 마크업에서 유틸리티로 준다.
+   pressed는 배경색 이동 + scale(0.98)까지. 그림자·크기 연출을 더하지 않는다. */
+@layer components {
+  .item {
+    /* ease-[ease-out]은 CSS 키워드 ease-out(cubic-bezier(0,0,.58,1))이다.
+       Tailwind의 ease-out 유틸리티는 cubic-bezier(0,0,.2,1)이라 곡선이 다르다. */
+    @apply bg-surface text-inherit no-underline shadow-card transition-transform duration-[120ms] ease-[ease-out];
+    -webkit-tap-highlight-color: transparent;
+  }
+  .item:active { @apply scale-[0.98]; }
+  .item:focus-visible { outline: 1.5px solid var(--color-primary); outline-offset: 2px; }
+}
+
+/* Pretendard — index.html에 쓰인 글자만 서브셋. 문구를 고치면 build-fonts.py를 다시 돌린다.
+   이 브랜드의 가장 얇은 굵기는 500이다(Regular 파일이 없고, 그보다 얇으면 희미해서 쓰지 않는다). */
+@font-face {
+  font-family: Pretendard; font-style: normal; font-weight: 500;
+  font-display: swap; src: url(/fonts/pretendard-500.woff2) format("woff2");
+}
+@font-face {
+  font-family: Pretendard; font-style: normal; font-weight: 600;
+  font-display: swap; src: url(/fonts/pretendard-600.woff2) format("woff2");
+}
+@font-face {
+  font-family: Pretendard; font-style: normal; font-weight: 700;
+  font-display: swap; src: url(/fonts/pretendard-700.woff2) format("woff2");
+}
+
+/* ── 진입 모션 ──
+   80~240ms, ease-out 계열의 곧은 곡선. 탄성·바운스 금지.
+   요소를 하나씩 시차로 등장시키는 연출(stagger)은 쓰지 않는다 — 한 번에 들어온다.
+   유틸리티로 표현되지 않는 키프레임이라 여기 커스텀으로 둔다. */
+@media (prefers-reduced-motion: no-preference) {
+  .rise { animation: rise .22s cubic-bezier(.2, .8, .2, 1) backwards; }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+}
