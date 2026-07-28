@@ -141,7 +141,7 @@
          밀려 지금 되는 전환을 깎는다 — 그래서 랜딩 역할을 카드가 흡수한다.
          코어 카드만 /go를 거친다. acttub.com은 우리가 계측을 붙일 수 없어서 직행시키면 이 클릭이
          어디에도 안 남는다. UTM은 그대로 목적지까지 전달된다.
-         voice·acti는 목적지에 우리 계측이 있어 referrer로 이미 세지므로 직행 유지.
+         서브프로젝트 카드는 목적지에 우리 계측이 있어 referrer로 이미 세지므로 직행 유지.
          "/go"가 아니라 "go.html"인 이유: 이 파일을 브라우저로 그냥 열어봤을 때(README가
          약속하는 방식) "/go"는 file:///go 로 잘못 풀려 메인 CTA가 죽는다. 배포본에서는
          cleanUrls가 go.html을 /go 로 한 번 넘겨주므로 양쪽 다 동작한다. -->
@@ -172,13 +172,15 @@
       <span class="mt-[18px] flex h-[52px] items-center justify-center gap-[6px] rounded-control bg-primary-strong text-[16px] font-semibold text-white group-active:bg-primary-deep">지금 시작해보기<svg class="shrink-0" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
     </a>
 
-    <!-- ③ 확장 슬롯 — 서브프로젝트는 계속 늘어난다(독백 등 대기 중).
+    <!-- ③ 확장 슬롯 — 서브프로젝트는 계속 늘어난다.
          행 하나가 곧 서브프로젝트 하나이고, 아래에 같은 모양으로 덧붙이면 된다.
-         ⚠️ 다만 홈에는 2~4개까지만 둔다. 행이 많아지면 작은 행들의 총 무게가 코어 카드를 눌러
-         깔때기가 옆으로 눕는다(README "구조 — 계층이 핵심").
-         5번째가 생기면 여기에 끼워 넣지 말고 아래에 낮은 강조의 "다른 연습도 보기" 한 줄을 붙여
-         전체 목록 페이지로 보낸다 — 프로젝트를 버리지 않으면서 계층을 지키는 방법이다.
-         그 목록 페이지는 5번째가 실제로 생길 때 만든다(지금 빈 페이지를 두지 않는다).
+         ⚠️ 홈에는 5개까지 둔다(2026-07-28에 4→5로 올렸다. 그 전 규칙은 "4개가 상한, 5번째는
+         목록 페이지로"였는데, 목록 페이지를 한 장 더 태우는 것보다 다섯 줄을 그냥 보여주는 쪽을
+         택했다). 행이 더 늘어나면 작은 행들의 총 무게가 코어 카드를 눌러 깔때기가 옆으로 눕는다
+         (README "구조 — 계층이 핵심").
+         6번째가 생기면 여기에 끼워 넣지 말고, 넘어간 사람 수가 가장 적은 행을 빼서 자리를 만든다
+         (숫자는 `tools/linkhub-경로.py`). 그래도 다 남겨야 하면 낮은 강조의 "다른 연습도 보기"
+         한 줄 + 전체 목록 페이지로 간다.
          neutral 배경 위에서는 ink-tertiary가 4.19:1로 AA에 못 미친다 → 라벨엔 ink-sub를 쓴다. -->
     <p class="rise mt-[24px] mb-[10px] pl-[4px] text-[12px] font-semibold text-ink-sub">가볍게 해보기</p>
 
@@ -209,14 +211,22 @@
       <svg class="shrink-0 text-ink-tertiary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
     </a>
 
-    <!-- 이 행으로 "가볍게 해보기"가 4개, 즉 상한이다. 다음 서브프로젝트는 여기에 끼워 넣지 말고
-         위 주석대로 "다른 연습도 보기" 한 줄 + 목록 페이지로 간다. -->
     <a class="item rise mb-[9px] flex items-center gap-[12px] rounded-card py-[14px] px-[16px]" href="https://stage.acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=stage">
       <span class="min-w-0 flex-1">
         <span class="block text-[15px] font-semibold">이 대사, 어느 무대?</span>
         <span class="mt-[2px] block truncate text-[13px] leading-[1.54] text-ink-tertiary">대사 한 줄로 작품 맞히기</span>
       </span>
       <span class="shrink-0 rounded-full bg-primary-soft py-[4px] px-[10px] text-[12px] font-semibold tabular-nums text-primary-strong">3분</span>
+      <svg class="shrink-0 text-ink-tertiary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </a>
+
+    <!-- 이 행으로 "가볍게 해보기"가 5개, 즉 상한이다. 6번째는 위 주석대로 자리를 비워서 넣는다. -->
+    <a class="item rise mb-[9px] flex items-center gap-[12px] rounded-card py-[14px] px-[16px]" href="https://mono.acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=mono">
+      <span class="min-w-0 flex-1">
+        <span class="block text-[15px] font-semibold">나만의 독백</span>
+        <span class="mt-[2px] block truncate text-[13px] leading-[1.54] text-ink-tertiary">질문 네 개로 받는 독백 한 편</span>
+      </span>
+      <span class="shrink-0 rounded-full bg-primary-soft py-[4px] px-[10px] text-[12px] font-semibold tabular-nums text-primary-strong">2분</span>
       <svg class="shrink-0 text-ink-tertiary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
     </a>
   </main>
