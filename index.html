@@ -3,6 +3,72 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<!-- ── 인스타 인앱 브라우저에서 빠져나오기 ──
+     바이오 링크를 누르면 인스타 안에 갇힌 웹뷰로 열린다.
+
+     안드로이드: intent 스킴으로 기본 브라우저를 부른다. 크롬을 package로 못박지 않는다 —
+       못박으면 크롬이 없는 기기(삼성 인터넷만 쓰는 갤럭시)에서 실패하고,
+       그때 쓰는 S.browser_fallback_url은 안드로이드 시스템이 아니라 intent를 해석한 쪽이
+       처리하는 관례라 인스타 웹뷰가 구현하지 않았으면 에러 화면으로 끝난다.
+       package를 빼면 기본 브라우저는 항상 존재하므로 그 실패 경로 자체가 없어진다.
+       기본 브라우저가 크롬인 기기가 대부분이라 실제로도 크롬이 뜬다.
+
+     iOS: 방법이 없다. 브라우저 종류의 문제가 아니라 WKWebView가 커스텀 스킴을 호스트 앱에
+       넘기지 않아서다 — 사파리든 크롬이든 웨일이든 똑같이 막힌다.
+       예전에 쓰던 x-safari-https도 인스타가 막았다. 그래서 안내 문구만 남긴다.
+
+     자동 전환은 보장되지 않는다. 파싱 중 실행되는 location.replace에는 사용자 제스처가
+     없어서 브라우저·웹뷰가 intent 실행을 거부할 수 있다. 그래서 자동은 "되면 좋은 것"으로 두고,
+     배너를 누를 수 있는 버튼으로 만들어 확실한 길을 따로 준다(탭에는 제스처가 붙는다).
+
+     ⚠️ 이 블록과 배너만 지우면 원래 동작으로 완전히 되돌아간다. -->
+<script>
+(function () {
+  var ua = navigator.userAgent || "";
+
+  // 메타 계열 인앱 웹뷰만 본다. 카카오·네이버 인앱은 건드리지 않는다 —
+  // 이 페이지로 들어오는 길이 인스타 바이오라서 그 밖은 대상이 아니다.
+  if (!/Instagram|FBAN|FBAV|FB_IAB|Threads/i.test(ua)) return;
+
+  var android = /Android/i.test(ua);
+
+  // 배너를 켜는 표식. 안드로이드는 누를 수 있는 버튼, iOS는 안내 문구라 서로 다른 걸 켠다.
+  // 스타일은 src/input.css의 .inapp-android-only / .inapp-ios-only가 갖고 있다.
+  document.documentElement.className += android ? " inapp-android" : " inapp-ios";
+
+  if (!android) return;
+
+  // 프래그먼트는 떼어낸다 — intent 문법에서 #이 구분자라 그대로 넣으면 주소가 깨진다.
+  // UTM을 포함한 쿼리는 그대로 넘어간다.
+  var intent = "intent://" + location.href.split("#")[0].replace(/^https?:\/\//, "") +
+               "#Intent;scheme=https;end";
+
+  // 버튼의 href로 쓸 주소. 요소 바로 뒤의 인라인 스크립트가 이 값을 집어넣는다.
+  //
+  // 왜 이렇게 넘기나: ① DOMContentLoaded를 기다리면 버튼은 파서가 지나가는 즉시 보이는데
+  // 그 사이에 누른 사람이 자리표시자로 이동해 UTM을 잃는다. ② 클릭을 리스너로 가로채는 방식은
+  // 가운데 클릭(auxclick)·길게 눌러 "새 탭에서 열기"를 놓치고, Element.closest가 없는
+  // 구형 웹뷰에서도 새어나간다. 요소 직후에 href를 채워 네이티브 링크 동작에 맡기는 편이 빈틈이 없다.
+  window.__openExternalHref = intent;
+
+  // ib=1은 자동 전환을 끄는 스위치다. 손으로 확인할 때 쓴다(?ib=1을 붙여서 연다).
+  // 값이 %69b 처럼 인코딩돼 들어와도 같게 읽히도록 문자열이 아니라 파라미터로 판정한다.
+  try {
+    if (new URLSearchParams(location.search).get("ib") === "1") return;
+  } catch (e) {
+    if (/[?&]ib=1(&|$)/.test(location.search)) return;   // URLSearchParams가 없는 낡은 웹뷰
+  }
+
+  // 자동화 브라우저에서는 전환하지 않는다. tools/device-matrix.py의 insta-inapp-android
+  // 프리셋이 인스타 UA로 도는데, 여기서 페이지를 떠나면 하네스가 레이아웃을 잴 대상을 잃는다.
+  // 배너는 위에서 이미 켰으니 인앱 화면 자체는 그대로 검사된다.
+  // 진짜 사용자 브라우저에서는 이 값이 서지 않는다.
+  if (navigator.webdriver) return;
+
+  location.replace(intent);
+})();
+</script>
 <title>acttub — 질문으로 찾는 연기 연습</title>
 <meta name="description" content="acttub은 질문을 주고받으며 내 연기에서 놓친 생각을 스스로 찾는 AI 연기 연습 파트너입니다.">
 <link rel="canonical" href="https://link.acttub.com/">
@@ -27,6 +93,27 @@
      아래 wrap의 고정 64px 계산과 어긋난다. -->
 <body class="min-h-svh bg-ground text-ink font-sans text-[15px] font-medium leading-[1.6] break-keep antialiased pt-[32px] px-[20px] pb-[calc(28px+env(safe-area-inset-bottom))]">
 <div class="mx-auto flex min-h-[calc(100svh-60px-env(safe-area-inset-bottom))] max-w-[400px] flex-col">
+
+  <!-- ⓪ 인앱 브라우저 탈출 — 평소엔 둘 다 숨어 있고, head의 스크립트가 html에 붙이는
+       .inapp-android / .inapp-ios 에 따라 하나만 보인다.
+
+       안드로이드는 누를 수 있는 버튼이다. 자동 전환은 사용자 제스처가 없어 막힐 수 있는데,
+       탭에는 제스처가 붙으므로 이 버튼이 확실한 길이다. 목적지는 현재 주소에 따라 달라져
+       마크업에 못 박을 수 없어서, 바로 아래 인라인 스크립트가 채운다.
+       자리표시자를 href=""로 두는 이유: 혹시 그 값이 쓰이더라도 현재 주소 그대로라 UTM이 남는다.
+       높이를 44px 이상으로 잡는다 — 그 아래는 손가락이 빗나간다(device-matrix가 잡는 기준).
+
+       iOS는 누를 게 없어 문구만 남긴다. 메뉴 위치(위·아래)와 항목 이름은 OS·앱 버전마다
+       달라서 단정하지 않는다 — "오른쪽 아래"라고 썼다가 거기 없으면 안 쓰느니만 못하다.
+       ···는 가운뎃점 세 개다. 서브셋 폰트에 항상 들어 있는 글자라 안전하다. -->
+  <!-- ⚠️ 여기에 flex 유틸리티를 넣지 않는다. 유틸리티 레이어가 컴포넌트 레이어를 이겨서
+       .inapp-android-only의 display:none을 덮어버리고, 일반 브라우저에서도 버튼이 보인다.
+       display는 전적으로 src/input.css가 쥔다. -->
+  <a id="open-external" class="inapp-android-only mb-[16px] min-h-[44px] items-center justify-center gap-[6px] rounded-control bg-primary-soft px-[14px] text-[14px] font-semibold text-primary-strong no-underline [-webkit-tap-highlight-color:transparent] focus-visible:[outline:1.5px_solid_var(--color-primary)] focus-visible:outline-offset-2" href="">브라우저에서 열기<svg class="shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
+  <!-- 요소가 파싱된 직후에 채운다. DOMContentLoaded를 기다리지 않는 이유는 위 주석에 있다. -->
+  <script>(function(){var a=document.getElementById("open-external");if(a&&window.__openExternalHref)a.href=window.__openExternalHref;})();</script>
+
+  <p class="inapp-ios-only mb-[16px] rounded-control bg-primary-soft py-[10px] px-[14px] text-center text-[13px] font-semibold text-primary-strong">··· 메뉴에서 브라우저로 열면 더 편해요</p>
 
   <!-- ① 정체 — 인스타 바이오에서 처음 넘어온 사람이 "여기가 뭐 하는 곳인가"를 먼저 만난다.
        마스코트는 브랜드 정본(brand/마스코트/README.md)이 "서비스 소개·시작 화면"에 허용한 자리다.

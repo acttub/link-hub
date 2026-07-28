@@ -41,6 +41,15 @@
   }
   .item:active { @apply scale-[0.98]; }
   .item:focus-visible { outline: 1.5px solid var(--color-primary); outline-offset: 2px; }
+
+  /* 인앱 브라우저에서만 보이는 탈출 안내. index.html 맨 위 스크립트가 html에
+     .inapp-android(누를 수 있는 버튼) 또는 .inapp-ios(문구)를 붙인다.
+     기본을 숨김으로 두는 이유: 일반 브라우저에서 잠깐이라도 보였다 사라지면 그게 더 거슬린다.
+     조건이 "조상 요소에 클래스가 있을 때"라 유틸리티로는 표현되지 않아 여기 둔다.
+     안드로이드 쪽은 flex라 display를 block으로 되돌리면 안 된다. */
+  .inapp-android-only, .inapp-ios-only { display: none; }
+  .inapp-android .inapp-android-only { display: flex; }
+  .inapp-ios .inapp-ios-only { display: block; }
 }
 
 /* Pretendard — index.html에 쓰인 글자만 서브셋. 문구를 고치면 build-fonts.py를 다시 돌린다.
