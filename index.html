@@ -88,6 +88,23 @@
      클래스를 바꾸면 `npm run css`를 다시 돌려 styles.css를 커밋한다(AGENTS.md 참조).
      디자인 토큰(색·모서리·그림자·폰트)은 src/input.css의 @theme 블록에 있다. -->
 <link rel="stylesheet" href="/styles.css">
+
+<!-- GA4. 프로덕션 호스트에서만 로드한다 — 로컬·프리뷰가 섞이면 유입 수를 믿을 수 없게 된다.
+     go.html에는 넣지 않는다: 0.2초 만에 떠나는 페이지라 async 스크립트가 발사 전에 죽는다.
+     그래서 코어 카드 클릭은 아래 본문에서 여기로 쏜다. -->
+<script>
+(function(){
+  if(!/(^|\.)acttub\.com$/.test(location.hostname))return;
+  var ID='G-DRMEWBN9Y9';
+  var s=document.createElement('script');
+  s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+ID;
+  document.head.appendChild(s);
+  window.dataLayer=window.dataLayer||[];
+  window.gtag=function(){window.dataLayer.push(arguments);};
+  window.gtag('js',new Date());
+  window.gtag('config',ID);
+})();
+</script>
 </head>
 <!-- 간격은 전부 px로 못박는다. rem 기반 유틸리티(pt-9 등)를 쓰면 루트 글꼴이 16px이 아닐 때
      아래 wrap의 고정 64px 계산과 어긋난다. -->
@@ -241,5 +258,19 @@
 
 </div>
 <script defer src="/_vercel/insights/script.js"></script>
+<!-- 코어 카드 클릭을 GA로 보낸다. 시트 기록은 go.html이 계속 맡는다 — 여기서 보내는 건
+     "허브에서 코어를 눌렀다"를 GA 세션에 남겨 도착 이후까지 잇기 위한 것이다.
+     ⚠️ 실제로 이어지는 건 acttub.com에도 같은 GA가 붙은 뒤부터다(2026-07-29 현재 코어 미계측).
+     기본 동작(이동)을 막지 않는다. preventDefault를 넣으면 gtag가 실패할 때 링크가 죽는다.
+     gtag.js가 뜨기 전에 누르면 이 이벤트는 유실된다 — 알고 받아들인 한계다(AGENTS.md "측정"). -->
+<script>
+(function(){
+  var a=document.querySelector('a[href^="go.html"]');
+  if(!a)return;
+  a.addEventListener('click',function(){
+    if(window.gtag)window.gtag('event','acttub_cta',{from:'hub-core'});
+  });
+})();
+</script>
 </body>
 </html>
