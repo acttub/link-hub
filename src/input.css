@@ -4,28 +4,29 @@
 @import "tailwindcss" source(none);
 @source "../index.html";
 
-/* ── brand/DESIGN.md 토큰 → Tailwind 테마. 값을 바꿀 때는 정본을 먼저 고친다. ──
-   라이트 전용이다 — 제품 화면에 어두운 배경을 만들지 않는다.
-   neutral은 Tailwind 기본 색상 스케일과 겹쳐서 ground로 이름을 바꿨다. */
+/* ── brand/ 생성물 ────────────────────────────────────────────────────
+   tools/subproject-sync-brand.py가 넣는다. src/brand/ 안의 파일을 직접 고치지 않는다 —
+   값을 바꾸려면 brand/DESIGN.md를 고치고 다시 생성한 뒤 동기화한다.
+
+   tailwind-starter.css = 색·타이포·radius·spacing 토큰 + 티어 경계(tablet 600 / desktop 1024).
+                          Tailwind 기본 스케일(sm·md·lg…)은 지워져 있다.
+   responsive-base.css  = 3단 티어 셸(.tier-root/.tier-shell) + 기기 하드닝.
+                          safe-area, 44px 탭 타겟, keep-all, reduced-motion이 여기서 온다.
+   전에는 이 값들을 손으로 옮겨 적었다. 그러면 정본이 바뀌어도 여기가 안 따라오고,
+   티어 경계가 통째로 빠져 데스크톱에서 400px 기둥으로 남았다(2026-07-29에 실제로 그랬다). */
+@import "./brand/tailwind-starter.css";
+@import "./brand/responsive-base.css";
+
+/* ── brand/DESIGN.md 토큰 — 생성물에 없는 것만 여기서 보탠다. ──
+   surface·ink·line·primary 계열과 font-sans은 위 tailwind-starter.css가 이미 준다.
+   여기서 다시 정의하면 정본이 바뀌어도 이 파일이 안 따라온다(neutral을 ground로 개명해
+   쓰는 것도 생성물이 알고 있는 예외라 그대로 둔다 — 생성기 주석 참조).
+   radius-card/radius-control은 이 프로젝트만 쓰는 이름이라 생성물에 없다. */
 @theme {
   --color-ground: #f2f4f6;
-  --color-surface: #ffffff;
-  --color-surface-sub: #f9fafb;
-  --color-ink: #191f28;
-  --color-ink-sub: #4e5968;
-  --color-ink-tertiary: #6b7684;
-  --color-line: #e5e8eb;
-  --color-primary: #0a79fb;          /* 링크·표식 */
-  --color-primary-strong: #0355f1;   /* 흰 글자를 얹는 면 (AA) */
-  --color-primary-deep: #0243c4;     /* pressed */
-  --color-primary-soft: #e8f3ff;
 
   --radius-card: 16px;               /* 그릇 */
   --radius-control: 12px;            /* 컨트롤 */
-
-  --shadow-card: 0 2px 8px rgb(0 0 0 / 0.08);
-
-  --font-sans: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* ── 공통 링크 카드 ──

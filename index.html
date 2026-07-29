@@ -91,8 +91,12 @@
 </head>
 <!-- 간격은 전부 px로 못박는다. rem 기반 유틸리티(pt-9 등)를 쓰면 루트 글꼴이 16px이 아닐 때
      아래 wrap의 고정 64px 계산과 어긋난다. -->
-<body class="min-h-svh bg-ground text-ink font-sans text-[15px] font-medium leading-[1.6] break-keep antialiased pt-[32px] px-[20px] pb-[calc(28px+env(safe-area-inset-bottom))]">
-<div class="mx-auto flex min-h-[calc(100svh-60px-env(safe-area-inset-bottom))] max-w-[400px] flex-col">
+<body class="min-h-svh bg-ground text-ink font-sans text-[15px] font-medium leading-[1.6] break-keep antialiased pt-[32px]">
+<!-- tier-shell(src/brand/responsive-base.css)이 폭 상한(phone 100% · tablet 560 · desktop 760)과
+     좌우·하단 여백(gutter+safe-area)을 갖는다. 예전엔 max-w-[400px]을 못박아 데스크톱에서도
+     폭이 그대로였다(tools/device-matrix.py의 "좁은 기둥" 판정) — mx-auto도 tier-shell이
+     margin-inline:auto로 이미 하므로 같이 뺐다. -->
+<div class="tier-shell flex min-h-[calc(100svh-60px-env(safe-area-inset-bottom))] flex-col">
 
   <!-- ⓪ 인앱 브라우저 탈출 — 평소엔 둘 다 숨어 있고, head의 스크립트가 html에 붙이는
        .inapp-android / .inapp-ios 에 따라 하나만 보인다.
@@ -179,7 +183,7 @@
          택했다). 행이 더 늘어나면 작은 행들의 총 무게가 코어 카드를 눌러 깔때기가 옆으로 눕는다
          (README "구조 — 계층이 핵심").
          6번째가 생기면 여기에 끼워 넣지 말고, 넘어간 사람 수가 가장 적은 행을 빼서 자리를 만든다
-         (숫자는 `tools/linkhub-경로.py`). 그래도 다 남겨야 하면 낮은 강조의 "다른 연습도 보기"
+         (숫자는 목적지별 referrer 유입 수로 판단한다). 그래도 다 남겨야 하면 낮은 강조의 "다른 연습도 보기"
          한 줄 + 전체 목록 페이지로 간다.
          neutral 배경 위에서는 ink-tertiary가 4.19:1로 AA에 못 미친다 → 라벨엔 ink-sub를 쓴다. -->
     <p class="rise mt-[24px] mb-[10px] pl-[4px] text-[12px] font-semibold text-ink-sub">가볍게 해보기</p>
@@ -224,7 +228,7 @@
     <a class="item rise mb-[9px] flex items-center gap-[12px] rounded-card py-[14px] px-[16px]" href="https://mono.acttub.com/?utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=mono">
       <span class="min-w-0 flex-1">
         <span class="block text-[15px] font-semibold">나만의 독백</span>
-        <span class="mt-[2px] block truncate text-[13px] leading-[1.54] text-ink-tertiary">질문 네 개로 받는 독백 한 편</span>
+        <span class="mt-[2px] block truncate text-[13px] leading-[1.54] text-ink-tertiary">질문 일곱 개로 받는 독백 한 편</span>
       </span>
       <span class="shrink-0 rounded-full bg-primary-soft py-[4px] px-[10px] text-[12px] font-semibold tabular-nums text-primary-strong">2분</span>
       <svg class="shrink-0 text-ink-tertiary" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
@@ -232,7 +236,7 @@
   </main>
 
   <footer class="rise mt-auto pt-[24px] text-center">
-    <a class="inline-block rounded-[8px] py-[8px] px-[12px] text-[13px] font-semibold text-ink-sub no-underline [-webkit-tap-highlight-color:transparent] focus-visible:[outline:1.5px_solid_var(--color-primary)] focus-visible:outline-offset-2" href="https://instagram.com/acttub_com">@acttub_com</a>
+    <a class="inline-flex min-h-[44px] items-center justify-center rounded-[8px] py-[8px] px-[12px] text-[13px] font-semibold text-ink-sub no-underline [-webkit-tap-highlight-color:transparent] focus-visible:[outline:1.5px_solid_var(--color-primary)] focus-visible:outline-offset-2" href="https://instagram.com/acttub_com">@acttub_com</a>
   </footer>
 
 </div>

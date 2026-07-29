@@ -12,14 +12,24 @@
 //    POST를 보낼 수 있다. 최악의 경우 이 시트에 가짜 행이 쌓이는 정도라 감수할 만하지만,
 //    전화번호가 들어 있는 리뷰 응답 시트에는 절대 같은 문을 열어주면 안 된다.
 
+// ⚠️ 이 파일은 원본 사본일 뿐이고, 고쳐도 자동으로 배포되지 않는다.
+//    바꿨으면 Apps Script 편집기에 다시 붙여넣고 "배포 관리 → 편집 → 새 버전"까지 해야
+//    실제로 반영된다. 안 하면 새 형식의 요청이 조용히 버려진다.
+
 const CLICK_HEADERS = ["at", "from", "src", "ref", "click_id"];
+
+// 서브프로젝트 안에서 일어난 행동(시작·생성·재생성·공유). 코어로 나가는 클릭과 성격이
+// 달라서 같은 표에 섞지 않는다 — 섞으면 "유입" 시트의 행 수가 곧 유입 수가 아니게 된다.
+const EVENT_HEADERS = ["at", "app", "name"];
 
 const LABELS = {
   at: "도착 시각",
   from: "채널",
   src: "링크 파라미터",
   ref: "출처 사이트",
-  click_id: "클릭 ID"
+  click_id: "클릭 ID",
+  app: "서브프로젝트",
+  name: "이벤트"
 };
 
 function label(k) { return LABELS[k] || k; }
@@ -45,9 +55,16 @@ function doPost(e) {
   // 않지만(그건 go.html에서 이미 분리했다), 오류 메일이 계속 오는 걸 막는다.
   try {
     const data = JSON.parse(e.postData.contents);
-    if (data.type !== "click") return ContentService.createTextOutput("ignored");
-    appendTo(SpreadsheetApp.getActiveSpreadsheet(), "유입", CLICK_HEADERS, data);
-    return ContentService.createTextOutput("ok");
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    if (data.type === "click") {
+      appendTo(ss, "유입", CLICK_HEADERS, data);
+      return ContentService.createTextOutput("ok");
+    }
+    if (data.type === "event") {
+      appendTo(ss, "이벤트", EVENT_HEADERS, data);
+      return ContentService.createTextOutput("ok");
+    }
+    return ContentService.createTextOutput("ignored");
   } catch (err) {
     return ContentService.createTextOutput("bad request");
   }
