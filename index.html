@@ -245,6 +245,54 @@
   </main>
 
 </div>
+<!-- 링크별 클릭은 이동을 붙잡지 않고 sendBeacon으로만 남긴다.
+     href를 식별자로 써서 Tailwind 클래스와 서브셋 문구는 건드리지 않는다. -->
+<script>
+(function(){
+  var CORE_TRACK='https://script.google.com/macros/s/AKfycbxmvQWyu-kslgIbVshJolG2KXV_omgT_vcUpmwJljvvYE8MkwUug-WGEhZmWUdU2ErK/exec';
+
+  function sendToSheet(payload){
+    if(!/(^|\.)acttub\.com$/.test(location.hostname))return;
+    try{
+      var body=JSON.stringify(payload);
+      var blob=new Blob([body],{type:'text/plain;charset=UTF-8'});
+      if(!(navigator.sendBeacon&&navigator.sendBeacon(CORE_TRACK,blob))){
+        fetch(CORE_TRACK,{method:'POST',mode:'no-cors',keepalive:true,body:body}).catch(function(){});
+      }
+    }catch(e){ /* 기록이 실패해도 링크 이동은 그대로 진행한다 */ }
+  }
+
+  function trackEvent(name){
+    if(!/(^|\.)acttub\.com$/.test(location.hostname))return;
+    sendToSheet({type:'event',app:'link-hub',name:name,at:new Date().toISOString()});
+  }
+
+  function eventForLink(link){
+    var href=link.getAttribute('href')||'';
+    if(/^go\.html(?:[?#]|$)/.test(href))return 'link_core';
+    try{
+      var host=new URL(href,location.href).hostname;
+      return {
+        'voice.acttub.com':'link_voice',
+        'acti.acttub.com':'link_acti',
+        'pick.acttub.com':'link_worldcup',
+        'stage.acttub.com':'link_stage',
+        'mono.acttub.com':'link_mono'
+      }[host]||'';
+    }catch(e){return '';}
+  }
+
+  var links=document.querySelectorAll('a[href]');
+  for(var i=0;i<links.length;i++){
+    var name=eventForLink(links[i]);
+    if(!name)continue;
+    (function(link,eventName){
+      link.addEventListener('click',function(){trackEvent(eventName);});
+    })(links[i],name);
+  }
+  trackEvent('landing_view');
+})();
+</script>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- 코어 카드 클릭을 GA로 보낸다. 시트 기록은 go.html이 계속 맡는다 — 여기서 보내는 건
      "허브에서 코어를 눌렀다"를 GA 세션에 남겨 도착 이후까지 잇기 위한 것이다.
