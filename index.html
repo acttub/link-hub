@@ -157,17 +157,16 @@
   </header>
 
   <main>
-    <!-- ⚠️ 그라디언트를 브랜드 정본 순서대로(밝은 #44c0fd → 진한 #0355f1) 깔면 흰 글자가
-         밝은 끝에 앉아 2.4:1까지 떨어진다(21px 제목 3:1, 12px 칩 4.5:1 둘 다 미달).
-         그래서 진한 쪽을 글자가 있는 왼쪽 위에 두고 밝은 끝은 마스코트가 있는 오른쪽
-         아래 모서리로 보낸다 — 색은 정본 토큰 그대로 쓰고 방향만 뒤집은 것이다.
-         정지점(62%/150%)은 눈으로 고른 값이 아니라, 칩 세 개 뒤 픽셀을 실제로 떠서
-         흰 글자 대비 4.5:1을 넘길 때까지 밀어낸 값이다. 카드 안에서는 완전한
-         #44c0fd에 닿지 않는다 — 오른쪽 아래 모서리가 가장 밝아야 마스코트가 뜬다. -->
+    <!-- ⚠️ 이 면에 그라데이션을 쓰지 않는다. brand/DESIGN.md가 그라디언트를
+         "브랜드 표면 전용(로고·아바타·스플래시), 버튼·카드에 금지"로 못박고 있고,
+         같은 문서가 "흰 글자를 얹는 모든 면"은 primary-strong이라고 정한다.
+         실제로 정본 순서(#44C0FD → #0355F1)로 깔아보니 흰 제목이 밝은 끝에서 2.4:1까지
+         떨어졌다 — 규칙에 근거가 있었다. 지금은 전 면이 5.88:1로 균일하다.
+         깊이는 아래 장식 원과 마스코트가 낸다. -->
     <!-- 코어만 채색 면으로 만들어 다섯 서브프로젝트와 경쟁하지 않게 한다.
          acttub.com은 목적지 계측을 붙일 수 없으므로 이 링크만 go.html을 거쳐 시트에 남긴다.
          UTM은 그대로 목적지까지 전달되고, go.html 시작 href는 하단 GA 선택자와도 맞물린다. -->
-    <a class="item rise group relative mt-[16px] block overflow-hidden rounded-card bg-[linear-gradient(145deg,var(--color-gradient-end)_0%,var(--color-gradient-end)_62%,var(--color-gradient-start)_150%)] p-[18px] text-surface shadow-overlay" href="go.html?from=hub-core&utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=core">
+    <a class="item rise group relative mt-[16px] block overflow-hidden rounded-card bg-primary-strong p-[18px] text-surface shadow-overlay" href="go.html?from=hub-core&utm_source=linkhub&utm_medium=bio&utm_campaign=hub&utm_content=core">
       <span class="absolute right-[-56px] bottom-[-70px] h-[170px] w-[170px] rounded-full bg-surface/[0.11]" aria-hidden="true"></span>
       <h2 class="relative z-10 text-[21px] font-bold leading-[1.4] tracking-[-0.46px]">내 연기로 시작하기</h2>
       <div class="relative z-10 mt-[10px] flex flex-wrap gap-[5px]">
